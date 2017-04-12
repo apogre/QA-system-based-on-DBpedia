@@ -1,1 +1,0 @@
-# QA-system-based-on-DBpedia
