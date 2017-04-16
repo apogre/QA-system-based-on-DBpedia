@@ -29,10 +29,14 @@ def question_parser(questions_list,id_list):
 	named_entities, pos_tags, dependency_parse = qt_tagger(question_list)
 	for enitities in named_entities:
 		entity = get_entity_nodes(enitities)
-	resources = kb_query.resource_extractor(entity)
-	print "Dbpedia Resources"
-	print "================="
-	pprint.pprint(resources)
+		resources = kb_query.resource_extractor(entity)
+		print "Dbpedia Resources"
+		print "================="
+		pprint.pprint(resources)
+		q_list = kb_query.graph_generator(resources)
+		print "Entity Graph"
+		print "============"
+		print q_list
 
 
 def qt_tagger(question_list):
@@ -41,7 +45,7 @@ def qt_tagger(question_list):
 	dep_s = [[list(parse.triples()) for parse in dep_parse] for dep_parse in parser.parse_sents(question_list)]
 	return ne_s, pos_s, dep_s
 
-with open('question.csv') as f:
+with open('question_test.csv') as f:
 	reader = csv.DictReader(f)
 	questions_list = []
 	id_list = []
