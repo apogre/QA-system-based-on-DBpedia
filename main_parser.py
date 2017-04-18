@@ -1,4 +1,4 @@
-import csv, os , pprint
+import csv, os , pprint, sys
 from itertools import groupby
 from nltk import word_tokenize
 from nltk.tag import StanfordNERTagger,StanfordPOSTagger
@@ -22,21 +22,40 @@ def get_entity_nodes(netagged_words):
             ent.append(tuple1)
     return ent
 
+def get_relation_nodes(netagged_words):
+    ent = []
+    for tag, chunk in groupby(netagged_words, lambda x:x[1]):
+        if tag == "NNP":
+            tuple1 =(" ".join(w for w, t in chunk),tag)
+            ent.append(tuple1)
+    return ent
+
+
 def question_parser(questions_list,id_list):
 	print questions_list,id_list
 	question_list = [word_tokenize(ques) for ques in questions_list]
 	print question_list
 	named_entities, pos_tags, dependency_parse = qt_tagger(question_list)
+	# print pos_tags
 	for enitities in named_entities:
+		# print enitities
 		entity = get_entity_nodes(enitities)
+		# print entity
+		# print pos_tags
+		relation = get_relation_nodes(pos_tags[0])
+		# print relation
 		resources = kb_query.resource_extractor(entity)
-		print "Dbpedia Resources"
-		print "================="
-		pprint.pprint(resources)
-		q_list = kb_query.graph_generator(resources)
-		print "Entity Graph"
-		print "============"
-		print q_list
+		# print "Dbpedia Resources"
+		# print "================="
+		# pprint.pprint(resources)
+		q_list, q_list_answers = kb_query.graph_generator(resources,question_list[0][0])
+		# print "Entity Graph"
+		# print "============"
+		# print q_list
+		# print q_list_answers
+		answer = kb_query.answer_lookup(q_list_answers,relation)
+		print "Answer: "+answer
+
 
 
 def qt_tagger(question_list):
