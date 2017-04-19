@@ -45,16 +45,16 @@ def question_parser(questions_list,id_list):
 		relation = get_relation_nodes(pos_tags[0])
 		# print relation
 		resources = kb_query.resource_extractor(entity)
-		# print "Dbpedia Resources"
-		# print "================="
-		# pprint.pprint(resources)
+		print "Dbpedia Resources"
+		print "================="
+		pprint.pprint(resources)
 		q_list, q_list_answers = kb_query.graph_generator(resources,question_list[0][0])
 		# print "Entity Graph"
 		# print "============"
 		# print q_list
 		# print q_list_answers
 		answer = kb_query.answer_lookup(q_list_answers,relation)
-		print "Answer: "+answer
+		print "Answer: "+str(answer)
 
 
 

@@ -2,9 +2,10 @@ import sys
 import sparql
 import operator
 from difflib import SequenceMatcher
+from nltk import word_tokenize
 
 sparql_dbpedia_on = 'https://dbpedia.org/sparql'
-sparql_dbpedia_on = 'http://localhost:8890/sparql'
+# sparql_dbpedia_on = 'http://localhost:8890/sparql'
 entity_label_threshold = 1.0
 
 question_dict = {'Who':'Person','Where':'Location'}
@@ -53,8 +54,11 @@ def graph_generator(resource,question_type):
 
 
 def answer_lookup(answer_list,relation):
+    # print answer_list1
+    # answer_list = list(set(answer_list1))
+    possible_answer_set = {}
     for possible_answer in answer_list:
-        # print possible_answer
+        print possible_answer
         q_graph = ('SELECT distinct ?p ?o WHERE { {<' + possible_answer + '> ?p ?o} UNION {?o ?p <' + possible_answer + '> } '
                                                                                                                         'FILTER(STRSTARTS(STR(?p), "http://dbpedia.org/property") || STRSTARTS(STR(?p), "http://dbpedia.org/ontology")) '
 
@@ -66,12 +70,24 @@ def answer_lookup(answer_list,relation):
         relation_all = [r[0] for r in relation]
         # print relation_all
         for vals in q_list:
+            added_keyword = []
+            # print vals
             count = 0
-            for val in vals:
-                if val in relation_all:
+            for val in word_tokenize(vals):
+                # print val
+                # print count, len(relation_all)
+                if val in relation_all and val not in added_keyword:
+                    # print 'here'
                     count=count+1
+                    added_keyword.append(val)
+
                 if count==len(relation_all):
-                    break
-        return possible_answer
+                    # print possible_answer
+                    if possible_answer not in possible_answer_set.keys():
+                        possible_answer_set[possible_answer] = [vals]
+                    else:
+                        if vals not in possible_answer_set[possible_answer]:
+                            possible_answer_set[possible_answer].append(vals)
+    return possible_answer_set
 
 
