@@ -25,7 +25,7 @@ def get_entity_nodes(netagged_words):
 def get_relation_nodes(netagged_words):
     ent = []
     for tag, chunk in groupby(netagged_words, lambda x:x[1]):
-        if tag == "NNP":
+        if "NN" in tag:
             tuple1 =(" ".join(w for w, t in chunk),tag)
             ent.append(tuple1)
     return ent
@@ -36,25 +36,34 @@ def question_parser(questions_list,id_list):
 	question_list = [word_tokenize(ques) for ques in questions_list]
 	print question_list
 	named_entities, pos_tags, dependency_parse = qt_tagger(question_list)
-	# print pos_tags
-	for enitities in named_entities:
+	print pos_tags
+	# print named_entities
+	# sys.exit(0)
+	for i,enitities in enumerate(named_entities):
 		# print enitities
 		entity = get_entity_nodes(enitities)
 		# print entity
 		# print pos_tags
-		relation = get_relation_nodes(pos_tags[0])
-		# print relation
-		resources = kb_query.resource_extractor(entity)
-		print "Dbpedia Resources"
-		print "================="
-		pprint.pprint(resources)
-		q_list, q_list_answers = kb_query.graph_generator(resources,question_list[0][0])
-		# print "Entity Graph"
-		# print "============"
-		# print q_list
-		# print q_list_answers
-		answer = kb_query.answer_lookup(q_list_answers,relation)
-		print "Answer: "+str(answer)
+		print question_list[i]
+		if entity:
+			relation = get_relation_nodes(pos_tags[i])
+			# print relation
+			try:
+				resources = kb_query.resource_extractor(entity)
+				print "Dbpedia Resources"
+				print "================="
+				pprint.pprint(resources)
+				q_list, q_list_answers = kb_query.graph_generator(resources,question_list[i][0])
+				# print "Entity Graph"
+				# print "============"
+				# print q_list
+				# print q_list_answers
+				answer = kb_query.answer_lookup(q_list_answers,relation)
+				print "Answer: "+str(answer)
+			except:
+				print "sparql query error"
+		else:
+			print "Entity not Found"
 
 
 
