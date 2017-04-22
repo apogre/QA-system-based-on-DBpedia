@@ -4,8 +4,8 @@ import operator
 from difflib import SequenceMatcher
 from nltk import word_tokenize
 
-# sparql_dbpedia_on = 'https://dbpedia.org/sparql'
-sparql_dbpedia_on = 'http://localhost:8890/sparql'
+sparql_dbpedia_on = 'https://dbpedia.org/sparql'
+# sparql_dbpedia_on = 'http://localhost:8890/sparql'
 entity_label_threshold = 1.0
 
 question_dict = {'Who':'Person','Where':'Location'}
