@@ -65,12 +65,14 @@ def answer_lookup(answer_list,relation):
                                                                                                                         'FILTER(STRSTARTS(STR(?p), "http://dbpedia.org/property") || STRSTARTS(STR(?p), "http://dbpedia.org/ontology")) '
 
                                                                                                               'FILTER(langMatches(lang(?o), "EN")).}')
+        print q_graph
         result = sparql.query(sparql_dbpedia_on, q_graph)
         q_values = [sparql.unpack_row(row_result) for row_result in result]
         q_list = [qv[1] for qv in q_values]
         # print q_list
         relation_all = [r[0] for r in relation]
         # print relation_all
+        # sys.exit(0)
         for vals in q_list:
             added_keyword = []
             # print vals
@@ -78,10 +80,15 @@ def answer_lookup(answer_list,relation):
             for val in word_tokenize(vals):
                 # print val
                 # print count, len(relation_all)
-                if val in relation_all and val not in added_keyword:
-                    # print 'here'
-                    count=count+1
-                    added_keyword.append(val)
+                for v in val.split('-'):
+                    if possible_answer == 'http://dbpedia.org/resource/Sergey_Brin':
+                        print v
+                    # print v
+                    if len(v)>1:
+                        if v in relation_all and v not in added_keyword:
+                            # print 'here'
+                            count=count+1
+                            added_keyword.append(v)
 
                 if count==len(relation_all):
                     # print possible_answer
