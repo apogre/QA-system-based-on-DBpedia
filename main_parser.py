@@ -33,6 +33,7 @@ def get_relation_nodes(netagged_words):
 
 
 def question_parser(questions_list,id_list):
+	os.system("touch Answers_predicted.csv")
 	print questions_list,id_list
 	question_list = [word_tokenize(ques) for ques in questions_list]
 	print question_list
@@ -45,7 +46,7 @@ def question_parser(questions_list,id_list):
 		print "Answering question with ID --", i, "--"
 		# print enitities
 		entity = get_entity_nodes(enitities)
-		# print entity
+		print entity
 		# print pos_tags
 		print question_list[i]
 		if entity:
@@ -66,6 +67,7 @@ def question_parser(questions_list,id_list):
 				#print answers
 				#print answer
 				keys = answer.keys()
+				
 				with open('Answers_predicted.csv','a') as f:
 					f.write(str(id_list[i]) + ",")
 					for key in keys:
