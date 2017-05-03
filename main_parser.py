@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import csv, os , pprint, sys
 from itertools import groupby
 from nltk import word_tokenize
@@ -39,7 +40,9 @@ def question_parser(questions_list,id_list):
 	print pos_tags
 	# print named_entities
 	# sys.exit(0)
+	global answerValue
 	for i,enitities in enumerate(named_entities):
+		print "Answering question with ID --", i, "--"
 		# print enitities
 		entity = get_entity_nodes(enitities)
 		# print entity
@@ -59,6 +62,23 @@ def question_parser(questions_list,id_list):
 				# print q_list
 				# print q_list_answers
 				answer = kb_query.answer_lookup(q_list_answers,relation)
+				print "----------$$$$$$$$$$$$$--------------------------------"
+				#print answers
+				#print answer
+				keys = answer.keys()
+				with open('Answers_predicted.csv','a') as f:
+					f.write(str(id_list[i]) + ",")
+					for key in keys:
+  						#print(key)
+						key1,key = key.split("http://dbpedia.org/resource/")
+						#print key
+						answerValue = key	
+						print answerValue
+						answer_data = "\"" + answerValue + "\","
+						f.write(answer_data)
+					f.write("\n")
+				f.close()
+				print "----------$$$$$$$$$$$$$--------------------------------"
 				print "Answer: "+str(answer)
 			except:
 				print "sparql query error"
@@ -73,7 +93,7 @@ def qt_tagger(question_list):
 	dep_s = [[list(parse.triples()) for parse in dep_parse] for dep_parse in parser.parse_sents(question_list)]
 	return ne_s, pos_s, dep_s
 
-with open('question_test.csv') as f:
+with open('question_testing.csv') as f:
 	reader = csv.DictReader(f)
 	questions_list = []
 	id_list = []
