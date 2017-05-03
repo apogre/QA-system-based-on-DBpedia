@@ -18,9 +18,9 @@ with open('Answers_predicted.csv','r') as f:
 			print "ID: ",id
 			print "Answers: ", answers
 			answers_dict_pred[id] = answers
-#print "Answers!!!"
-#print answers_dict_pred
-#print "All the answers!!!"
+print "Answers!!!"
+print answers_dict_pred
+print "All the answers!!!"
 with open('answers_act.csv','r') as f:
         for line in f:
                 if line.split(',')[0] in answers_dict_pred.keys():
@@ -32,17 +32,23 @@ with open('answers_act.csv','r') as f:
                                 answers.pop(0)
 			if answers[0][-1] == '\n':
 				answers[0] = answers[0][:-1]
+			if answers[0][-1] == '\r':
+                                answers[0] = answers[0][:-1]
+			if answers[0][-2:-1] == '\r\n':
+				print "RN found"
+				answers[0] = answers[0].replace(' ', '')[:-2]
 			count = 0
-			
+			print "Corrected answers ***********", answers
 			#print answers_dict_pred[id]
 			if not answers_dict_pred[id]:
 				print "The answer is empty"
 				empty_ans = empty_ans + 1
 				print "Missing ID: ",id
+				print ""
 			else:
 				for values in answers_dict_pred[id]:
-					#print "Values in answers predicted are: ", values
-					#print answers
+					print "Values in answers predicted are: ", values
+					print answers
 					if values in answers:
 						print "The answer --", values, "-- is present in our local DB"
 						count = count + 1
